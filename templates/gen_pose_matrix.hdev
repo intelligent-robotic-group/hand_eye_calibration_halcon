@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="17.12">
+<procedure name="main">
+<interface/>
+<body>
+<l>create_pose (1.344064,-0.777596,-0.141234,126.6701,5.8605,36.4353, 'Rp+T', 'abg', 'point', Pose2)</l>
+<l>write_pose (Pose2, 'C:/Users/robot/Desktop/ma1440/campose00.dat')</l>
+<c></c>
+<l>create_pose (1.393078,-0.777134,-0.142700,97.4402,16.6805,33.8996, 'Rp+T', 'abg', 'point', Pose2)</l>
+<l>write_pose (Pose2, 'C:/Users/robot/Desktop/ma1440/campose01.dat')</l>
+<c></c>
+<l>create_pose (1.426621,-0.764241,-0.142239,87.8060,4.3614,31.9533, 'Rp+T', 'abg', 'point', Pose2)</l>
+<l>write_pose (Pose2, 'C:/Users/robot/Desktop/ma1440/campose02.dat')</l>
+<c></c>
+<l>create_pose (1.378825,-0.834782,-0.113300,81.6028,-13.2195,27.9484, 'Rp+T', 'abg', 'point', Pose2)</l>
+<l>write_pose (Pose2, 'C:/Users/robot/Desktop/ma1440/campose03.dat')</l>
+<c></c>
+<l>create_pose (1.346577,-0.825458,-0.160833,30.4500,-57.4098,74.3487, 'Rp+T', 'abg', 'point', Pose2)</l>
+<l>write_pose (Pose2, 'C:/Users/robot/Desktop/ma1440/campose04.dat')</l>
+<c></c>
+<l>create_pose (1.408973,-0.812663,-0.186536,15.3630,-54.4672,90.4304, 'Rp+T', 'abg', 'point', Pose)</l>
+<l>write_pose (Pose, 'C:/Users/robot/Desktop/ma1440/campose05.dat')</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
