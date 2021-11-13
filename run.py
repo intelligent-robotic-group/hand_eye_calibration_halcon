@@ -12,6 +12,7 @@ import copy
 import re
 import sys
 import xml.etree.ElementTree as ET
+import shutil
 
 
 USAGE_DESCRIPTION = '处理图片和位姿文件，直接生成Halcon能运行的手眼标定脚本。'
@@ -155,14 +156,17 @@ def main():
 
     # 图片复制过去
     dest_path = os.path.join(args.out_dir, 'img')
+    if not os.path.exists(dest_path):
+        os.makedirs(dest_path)
     print(f'复制图片到路径 {dest_path}')
     for img_path in images_paths:
-        os.system(f'cp {img_path} {dest_path}/')
+        shutil.copy2(img_path, dest_path)
     # 对应的相机内参文件复制到输出文件夹中
     cam_file = 'templates/D415-HC80.dat' if args.camera == 'd415' else 'templates/D435i-HC80.dat'
-    os.system(f'cp {cam_file} {args.out_dir}/')
+    shutil.copy2(cam_file, args.out_dir)
     # 标定板的描述文件复制到输出文件夹中
-    os.system(f'cp templates/HC-IW.descr {args.out_dir}/')
+    shutil.copy2('templates/HC-IW.descr', args.out_dir)
+    print('处理完成')
 
 
 if __name__ == '__main__':
