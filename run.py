@@ -19,6 +19,8 @@ USAGE_DESCRIPTION = '处理图片和位姿文件，直接生成Halcon能运行�
 N_NUM = 3
 
 parser = argparse.ArgumentParser(usage=USAGE_DESCRIPTION)
+parser.add_argument('--eye_on_hand', default=False, action='store_true', dest='eye_on_hand',
+                    help='选择使用眼在手上的标定方式')
 parser.add_argument('-i', '--img-dir', type=str, dest='img_dir', required=True,
                     help='指定图片所在文件夹，文件夹中的图片将会按照默认排序进行处理，所以文件夹中的图片需要按照序号排序；')
 parser.add_argument('-p', '--pose-path', type=str, dest='pose_path', required=True,
@@ -59,7 +61,7 @@ def pretty_xml(element, indent, newline, level=0):
         pretty_xml(subelement, indent, newline, level=level + 1)
 
 
-def gen_create_pose_hdev(poses):
+def gen_create_pose_hdev(poses, eye_on_hand=False):
     def create_line(parent, text):
         l = ET.SubElement(parent, 'l')
         l.text = text
@@ -72,7 +74,10 @@ def gen_create_pose_hdev(poses):
     for i, pose in enumerate(poses):
         pose_str = ','.join(pose)
         code1 = f"create_pose ({pose_str}, 'Rp+T', 'abg', 'point', Pose2)"
-        code2 = f"write_pose (Pose2, 'campose{str(i).zfill(N_NUM)}.dat')"
+        if not eye_on_hand:
+            code2 = f"write_pose (Pose2, 'campose{str(i).zfill(N_NUM)}.dat')"
+        else:
+            code2 = f"write_pose (Pose2, 'robot_pose_{str(i).zfill(N_NUM)}.dat')"
         create_line(body, code1)
         create_line(body, code2)
 
@@ -87,8 +92,13 @@ def gen_create_pose_hdev(poses):
     return tree
 
 
-def gen_hand_eye_cali_hdev(n_img, camera):
-    tree = ET.parse('templates/hand_eye_stationarycam_calibration.hdev')
+def gen_hand_eye_cali_hdev(n_img, camera, eye_on_hand=False):
+    if not eye_on_hand:
+        # 眼在手外
+        tree = ET.parse('templates/hand_eye_stationarycam_calibration.hdev')
+    else:
+        # 眼在手上
+        tree = ET.parse('templates/hand_eye_movingcam_calibration.hdev')
     root = tree.getroot()
     all_line_elem = root.find('procedure').find('body').findall('l')
     for line in all_line_elem:
@@ -143,9 +153,9 @@ def main():
     # 生成Halcon脚本
     print('现开始生成Halcon脚本...')
     # 生成pose的hdev脚本
-    hdev_file_gen_pose = gen_create_pose_hdev(poses)
+    hdev_file_gen_pose = gen_create_pose_hdev(poses, args.eye_on_hand)
     # 生成标定的hdev脚本
-    hdev_file_cali_handeye = gen_hand_eye_cali_hdev(len(poses), args.camera)
+    hdev_file_cali_handeye = gen_hand_eye_cali_hdev(len(poses), args.camera, args.eye_on_hand)
 
     if not os.path.exists(args.out_dir):
         os.makedirs(os.path.join(args.out_dir, 'img'))
